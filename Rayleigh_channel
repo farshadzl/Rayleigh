@@ -1,0 +1,37 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Constants
+c = 3e8  # Speed of light in meters per second
+frequency = 2.4e9  # Frequency in Hz (e.g., 2.4 GHz)
+wavelength = c / frequency
+
+# Define the distance range
+min_distance = 1  # Minimum distance in meters
+max_distance = 100  # Maximum distance in meters
+num_points = 100  # Number of distance points
+
+# Generate distances within the specified range
+distances = np.linspace(min_distance, max_distance, num_points)
+
+# Calculate the path loss using the Friis path loss model
+path_loss = (wavelength / (4 * np.pi * distances)) ** 2
+
+# Generate complex Rayleigh-distributed fading samples for each distance point
+complex_rayleigh_samples = []
+for pl in path_loss:
+    sigma = np.sqrt(pl / 2)  # Rayleigh scale parameter based on path loss
+    real_part = np.random.normal(0, sigma)
+    imaginary_part = np.random.normal(0, sigma)
+    complex_sample = (real_part + 1j * imaginary_part)
+    complex_rayleigh_samples.append(complex_sample)
+
+# Plot the complex Rayleigh fading channel based on distance
+plt.figure()
+plt.plot(distances, np.abs(complex_rayleigh_samples), label='Amplitude', color='b')
+plt.title('Complex Rayleigh Fading Channel vs. Distance')
+plt.xlabel('Distance (meters)')
+plt.ylabel('Amplitude')
+plt.grid(True)
+plt.legend()
+plt.show()
